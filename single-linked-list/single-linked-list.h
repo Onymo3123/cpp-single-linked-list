@@ -61,21 +61,25 @@ class SingleLinkedList {
            }
 
            BasicIterator& operator++() noexcept {
+               assert(node_ != nullptr);
                node_ = node_->next_node;
                return *this;
            }
 
            BasicIterator operator++(int) noexcept {
+               assert(node_ != nullptr);               
                auto last_node = node_;
                node_ = node_->next_node;
                return BasicIterator(last_node);
            }
 
            [[nodiscard]] reference operator*() const noexcept {
+               assert(node_ != nullptr);
                return (*node_).value;
            }
 
            [[nodiscard]] pointer operator->() const noexcept {
+               assert(node_ != nullptr);
                return &(*node_).value;
            }
 
@@ -135,6 +139,7 @@ public:
     }
 
     Iterator InsertAfter(ConstIterator pos, const Type& value) {
+        assert(pos.node_ != nullptr);
         Node* node = new Node(value, pos.node_->next_node);
         pos.node_->next_node = node;
         size_++;
@@ -148,6 +153,7 @@ public:
     }
 
     Iterator EraseAfter(ConstIterator pos) noexcept {
+       assert(pos.node_ != nullptr);
        auto toErase = pos.node_->next_node;
        pos.node_->next_node = toErase->next_node;
        delete toErase;
@@ -189,21 +195,18 @@ public:
         size_ = 0;
         if(!other.IsEmpty()) {
            SingleLinkedList List;
-           SingleLinkedList List1;
+           Iterator iter = List.before_begin();
            try {
-               for (auto a : other) {
-                  List.PushFront(a);
-               }
-               for (auto a : List) {
-                  List1.PushFront(a);
-               }
-               List.Clear();
+                for(auto a : other){
+                   List.InsertAfter(iter, a);
+                   iter++;
+                }
            } catch(...) {
                Clear();
                throw;
            }
-           swap(List1);
-           List1.Clear();
+           swap(List);
+           List.Clear();
         }  
     }
     SingleLinkedList& operator=(const SingleLinkedList& rhs) {
