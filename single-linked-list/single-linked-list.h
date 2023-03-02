@@ -197,8 +197,8 @@ public:
            SingleLinkedList List;
            Iterator iter = List.before_begin();
            try {
-                for(auto a : other){
-                   List.InsertAfter(iter, a);
+                for(auto node : other){
+                   List.InsertAfter(iter, node);
                    iter++;
                 }
            } catch(...) {
